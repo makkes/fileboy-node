@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div id="wrapper">
+    <div class="container">
+        <div id="dropzone-outer">
+            <div id="dropzone">
+                <div>Drag a file from your file system here</div>
+                <div><i class="fa fa-cloud-upload fa-4x"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="display:none;">
+        <div id="result"></div>
+    </div>
+    <input id="file_input" type="file" multiple style="display:none;">
+</div>
+    
+<script>
+
+function readablizeBytes(bytes) {
+    var s = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
+    var e = Math.floor(Math.log(bytes) / Math.log(1024));
+    return (bytes / Math.pow(1024, Math.floor(e))).toFixed(2) + " " + s[e];
+}
+
+function init() {
+
+    var dropbox = document.getElementById("dropzone"),
+        finput = document.querySelector("#file_input"),
+        w = dropbox.clientWidth, h = dropbox.clientHeight;
+    dropbox.style.width = w + "px";
+    dropbox.style.height = w + "px";
+    finput.addEventListener("change", function (ev) {
+        handleFiles(finput.files);
+    });
+    dropbox.addEventListener("click", function (ev) {
+        finput.click();
+    });
+    dropbox.addEventListener("dragenter", dragenter, false);
+    dropbox.addEventListener("dragleave", dragleave, false);
+    dropbox.addEventListener("dragover", dragover, false);
+    dropbox.addEventListener("drop", drop, false);
+}
+
+function dragenter(e) {
+    var dropbox = document.getElementById("dropzone");
+    dropbox.style["transform"] = "scale(1.2, 1.2)";
+    dropbox.style["backgroundColor"] = "rgb(0, 255, 0)";
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragleave(e) {
+    var dropbox = document.getElementById("dropzone");
+    dropbox.style["transform"] = "scale(1, 1)";
+    dropbox.style["backgroundColor"] = "rgb(173, 173, 173)";
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function dragover(e) {
+    var dropbox = document.getElementById("dropzone");
+    dropbox.style["transform"] = "scale(1.2, 1.2)";
+    dropbox.style["backgroundColor"] = "rgb(0, 255, 0)";
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+function drop(e) {
+    var dropbox = document.getElementById("dropzone");
+    dropbox.style["transform"] = "scale(1, 1)";
+    dropbox.style["backgroundColor"] = "rgb(173, 173, 173)";
+    e.stopPropagation();
+    e.preventDefault();
+
+    var dt = e.dataTransfer;
+    var files = dt.files;
+
+    handleFiles(files);
+}
+
+function handleFiles(files) {
+    for(var i = 0; i < files.length; i++) {
+        var file = files[i];
+        upload(file);
+    }
+}
+
+function upload(file) {
+    var form = new FormData();
+    form.append("file", file);
+    var resChild = document.createElement("div");
+    var resElem = document.getElementById("result");
+    resElem.parentNode.style["display"] = "";
+    resElem.appendChild(resChild);
+    resChild.innerHTML = "<progress value='0' max='1'>Uploading</progress><div><span>0</span>/<span>" + readablizeBytes(file.size) + "</span></div>";
+    $.ajax({
+        url: "{{ upload_url }}",
+        type: "POST",
+        data: form,
+        processData: false,
+        contentType: false,
+        xhr: function () {
+            var myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload) {
+                myXhr.upload.addEventListener("progress", function (ev) {
+                    resChild.firstChild.value = ev.loaded/ev.total;
+                    resChild.firstChild.nextSibling.firstChild.innerHTML = readablizeBytes(ev.loaded);
+                }, false);
+            }
+            return myXhr;
+        }
+    }).done(function (response) {
+        resChild.innerHTML = "<a href='" + response.url + "'>" + response.url + "</a>";
+    }).fail(function (jqhxr, err) {
+        if(jqhxr.status === 413) {
+            err = "File too large";
+        }
+        resChild.innerHTML = "Upload failed: " + err;
+    });
+}
+
+if(window.addEventListener) {
+    window.addEventListener("load", init, true);
+    } else {
+    window.onload = init;
+}
+
+</script>
+
+{% endblock %}
