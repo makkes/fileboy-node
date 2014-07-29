@@ -84,6 +84,7 @@
         document.querySelector("#admin_files").addEventListener("click", function(ev) {
             var elem = ev.target.parentElement;
             var rowElement = elem.parentElement.parentElement;
+            rowElement.classList.toggle("waiting");
             var nextSelected = rowElement.nextElementSibling;
             if (!nextSelected) {
                 nextSelected = rowElement.previousElementSibling;
@@ -154,6 +155,7 @@
             if (!currElem) {
                 return; // no element selected
             }
+            currElem.classList.toggle("waiting");
             var deleteLink = document.querySelector("#admin_files .fentry.active a.delete");
             var nextSelected = currElem.nextElementSibling;
             if (!nextSelected) {

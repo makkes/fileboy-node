@@ -89,6 +89,16 @@ a i[class^="fa"] {
     background-color: #dee0ff;
 }
 
+#admin_files tr.fentry.waiting * {
+    color: lightgray;
+    background-color: #f0f1ff;
+}
+
+#admin_files tr.fentry.waiting a {
+    pointer-events: none;
+}
+
+
 #admin_files .fname {
     width: 45%;
     overflow: hidden;
