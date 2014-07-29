@@ -72,7 +72,6 @@ function walk(dir, done) {
 function info(file, stats, callback) {
     fs.stat(file, function(err, stat) {
         var relpath = file.replace(config.get("upload-folder"), "");
-        console.log(relpath);
         mtime = moment(stat.mtime);
         callback({
             url: config.get("base-url") + "/uploads/" + relpath,
