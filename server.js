@@ -122,6 +122,7 @@ app.get("/admin", function(req, res) {
                                 }
                                 return 0;
                             });
+                            res.header("Cache-Control", "no-cache, no-store, must-revalidate");
                             res.render('admin', {
                                 files: infos,
                                 total_size: total_size,
