@@ -1,5 +1,6 @@
 var path = require('path');
 var express = require('express');
+var session = require('express-session');
 var app = express();
 var swig = require('swig');
 var busboy = require('connect-busboy');
@@ -7,9 +8,11 @@ var fs = require('fs');
 var config = require('config');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
+
 var track = require('track');
 var helpers = require('helpers');
 var guest = require('guest');
+var login = require('login');
 
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
@@ -19,6 +22,9 @@ app.set('views', __dirname + '/views');
  * Middleware
  */
 
+app.use(session({
+    secret: 'U_W8y3t0V03jW_'
+}));
 app.use("/uploads", track.track_download);
 app.use("/uploads", express.static(config.get('upload-folder')));
 app.use('/css', express.static(__dirname + '/css'));
@@ -64,8 +70,44 @@ function revoke_pass(req, res, next) {
 }
 
 /**
+ * public URLs
+ */
+
+app.get("/login", function(req, res, next) {
+    res.render('login');
+});
+
+app.post("/login", function(req, res, next) {
+    var jid = req.body.jid,
+        code = parseInt(req.body.code);
+    if (login.codeMatches(jid, code)) {
+        login.deleteCode(jid);
+        req.session.user = jid;
+        res.send("ok").end();
+    } else {
+        res.status(403).send("forbidden").end();
+    }
+});
+
+app.get("/code/:jid", function(req, res, next) {
+    if (config.get("adminJIDs").indexOf(req.params.jid) === -1) {
+        res.status(403).send("forbidden").end();
+        return;
+    }
+    var entry = login.getOrCreateCode(req.params.jid);
+    login.sendCode(entry.code, req.params.jid);
+    res.send("ok").end();
+});
+
+
+/**
  * protected URLs
  */
+
+
+if (config.get('codeLoginEnabled')) {
+    app.use("/", login.authenticate);
+}
 
 app.get("/", function(req, res) {
     res.render('index', {
@@ -87,7 +129,7 @@ function upload(req, res, next) {
                 res.json({
                     url: config.get("base-url") + "/uploads/" + newdir + "/" + newfile
                 });
-                next();
+                res.end();
             });
         });
     });
@@ -184,4 +226,5 @@ var server = app.listen(3000, function() {
             }
         });
     });
+    setInterval(login.tidyCodes, 5000);
 });

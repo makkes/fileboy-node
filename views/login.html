@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+<form class="jid">
+    JID: <input type="text" id="jid">
+    <input type="submit" value="Login" class="submit">
+    <span class="error"></span>
+</form>
+
+<form class="code" style="display:none;">
+    Code: <input type="text" id="code">
+    <input type="submit" value="Confirm" class="submit">
+    <span class="error"></span>
+</form>
+
+<script src="/js/login.js"></script>
+
+{% endblock %}

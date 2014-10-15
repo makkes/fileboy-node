@@ -2,5 +2,14 @@
     "upload-url": "/upload",
     "upload-folder": "/tmp/fileboy_uploads",
     "base-url": "http://localhost:3000",
-    "database": "fileboy.sqlite"
+    "database": "fileboy.sqlite",
+    "codeLoginEnabled": false,
+    "codeSender": {
+        "jid": "YOUR_JID",
+        "password": "YOUR_PASSWORD"
+    },
+    "adminJIDs": [
+        "JID OF ADMIN 1",
+        "JID OF ADMIN 2"
+    ]
 }
