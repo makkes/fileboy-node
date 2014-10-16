@@ -1,5 +1,6 @@
 var config = require('config');
 var xmpp = require('node-xmpp-client');
+var crypto = require('crypto');
 
 var codes = {};
 var CODE_LIFETIME = 30000;
@@ -24,7 +25,7 @@ function deleteCode(jid) {
 function getOrCreateCode(jid) {
     if (!codes[jid]) {
         var entry = {
-            code: Math.floor(Math.random() * 1000),
+            code: crypto.randomBytes(3).toString('hex'),
             generated: new Date()
         };
         codes[jid] = entry;

@@ -79,7 +79,7 @@ app.get("/login", function(req, res, next) {
 
 app.post("/login", function(req, res, next) {
     var jid = req.body.jid,
-        code = parseInt(req.body.code);
+        code = req.body.code;
     if (login.codeMatches(jid, code)) {
         login.deleteCode(jid);
         req.session.user = jid;
