@@ -9,10 +9,10 @@ var config = require('config');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
 
-var track = require('track');
-var helpers = require('helpers');
-var guest = require('guest');
-var login = require('login');
+var track = require('./track');
+var helpers = require('./helpers');
+var guest = require('./guest');
+var login = require('./login');
 
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
