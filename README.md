@@ -60,9 +60,15 @@ Here's a short explanation of the most commonly changed parameters:
 Security
 ========
 
-Currently fileboy comes with no autorization/authentication mechanism included.
-I'm running it behing an nginx proxy with HTTP authentication for uploads like
-this:
+Fileboy can be run with no authorization/authentication at all or via
+authentication using a combination of Jabber ID (JID) and a one-time code.
+
+If you want the JID+Code combination, set the `codeLoginEnabled` configuration
+parameter to `true` and set `codeSender` as well as `adminJIDs` appropriately.
+
+If you do not want fileboy to handle authorization for you, just run it behing
+an HTTP proxy with authentication for uploads. This is a sample nginx
+configuration:
 
     server {
         listen              443;
@@ -111,3 +117,6 @@ plugin directory (usually
 /usr/share/shutter/resources/system/upload_plugins/upload) and adapt the URL in
 line 84 to your needs. Per default the plugin uses HTTP basic authentication.
 You can modify username/password from within Shutter.
+
+Please be aware that this plugin does not work in conjunction with the JID+Code
+authentication option of fileboy.
