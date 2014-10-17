@@ -23,7 +23,7 @@ app.set('views', __dirname + '/views');
  */
 
 app.use(session({
-    secret: 'U_W8y3t0V03jW_'
+    secret: config.get('session-secret')
 }));
 app.use("/uploads", track.track_download);
 app.use("/uploads", express.static(config.get('upload-folder')));

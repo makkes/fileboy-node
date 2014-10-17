@@ -56,6 +56,7 @@ Here's a short explanation of the most commonly changed parameters:
 * `upload-folder`: All uploaded files will land here.
 * `base-url`: Set this to the public URL that users use to access the application.
 * `database`: File name of the SQLite database used for guest passes
+* `session-secret`: Used for signing users' cookies.
 
 Security
 ========

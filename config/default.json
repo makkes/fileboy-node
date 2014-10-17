@@ -4,6 +4,7 @@
     "base-url": "http://localhost:3000",
     "database": "fileboy.sqlite",
     "codeLoginEnabled": false,
+    "session-secret": "CHANGE_ME",
     "codeSender": {
         "jid": "YOUR_JID",
         "password": "YOUR_PASSWORD"
