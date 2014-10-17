@@ -24,6 +24,8 @@ Screenshots
 
 * [Upload view](https://fileboy.makk.es/uploads/f675d70cf1fc48b3938ce36c93846c9b/fileboy.png)
 * [Admin view](https://fileboy.makk.es/uploads/4ab84bfd8f35440b82d91e9a2a955f57/fileboy_admin.png)
+* [Login view](https://fileboy.makk.es/uploads/442dc476-cc8f-4c25-a6c8-b20ad66c6113/fileboy_login.png)
+
 
 Installation
 ============
