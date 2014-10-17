@@ -62,10 +62,12 @@ Security
 ========
 
 Fileboy can be run with no authorization/authentication at all or via
-authentication using a combination of Jabber ID (JID) and a one-time code.
+authentication using a combination of user ID and a one-time code. The user ID
+has to be entered as a valid URI such as 'xmpp:alice@example.org' or
+'mailto:bob@example.org'.
 
-If you want the JID+Code combination, set the `codeLoginEnabled` configuration
-parameter to `true` and set `codeSender` as well as `adminJIDs` appropriately.
+If you want the UID+Code combination, set the `codeLoginEnabled` configuration
+parameter to `true`, configure your transports accordingly and add all authorized users to the `adminUIDs` array.
 
 If you do not want fileboy to handle authorization for you, just run it behing
 an HTTP proxy with authentication for uploads. This is a sample nginx

@@ -5,12 +5,31 @@
     "database": "fileboy.sqlite",
     "codeLoginEnabled": false,
     "session-secret": "CHANGE_ME",
-    "codeSender": {
-        "jid": "YOUR_JID",
-        "password": "YOUR_PASSWORD"
-    },
-    "adminJIDs": [
-        "JID OF ADMIN 1",
-        "JID OF ADMIN 2"
-    ]
+    "codeLogin": {
+        "transports": {
+            "xmpp": {
+                "sender": {
+                    "jid": "SENDER_JID",
+                    "password": "PASSWORD"
+                }
+            },
+            "pushbullet": {
+                "accessToken": "ACCESS_TOKEN",
+                "device_iden": "DEVICE_IDEN"
+            },
+            "mailto": {
+                "service": "SERVICE_NAME", // see https://github.com/andris9/nodemailer-wellknown#supported-services
+                "auth": {
+                    "user": "MAIL_USER",
+                    "pass": "PASSWORD"
+                },
+                "sender": "SENDER"
+            }
+        },
+        "adminUIDs": [
+            "xmpp:ADMIN_1",
+            "pushbullet:",
+            "mailto:ADMIN_2"
+        ]
+    }
 }

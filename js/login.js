@@ -1,32 +1,32 @@
 (function() {
     window.onload = function() {
-        var formElem = document.querySelector('form.jid');
-        var jidElem = document.querySelector('#jid'),
-            submitElem = document.querySelector('form.jid .submit');
+        var formElem = document.querySelector('form.uid');
+        var uidElem = document.querySelector('#uid'),
+            submitElem = document.querySelector('form.uid .submit');
         formElem.addEventListener('submit', function(ev) {
 
             var codeErrorElem = document.querySelector('form.code .error'),
-                jidErrorElem = formElem.querySelector('.error'),
-                jid = jidElem.value;
+                uidErrorElem = formElem.querySelector('.error'),
+                uid = uidElem.value;
 
-            jidErrorElem.style.display = "none";
+            uidErrorElem.style.display = "none";
             ev.preventDefault();
 
             $(document).ajaxError(function(event, jqXHR, ajaxSettings, error) {
                 if (jqXHR.status === 403) {
                     if (ajaxSettings.url === "/login") {
-                        codeErrorElem.innerHTML = "Wrong code";
+                        codeErrorElem.innerHTML = jqXHR.responseText;
                         codeErrorElem.style.display = '';
                     } else if (ajaxSettings.url.substring(0, 6) === "/code/") {
-                        jidErrorElem.innerHTML = "Wrong JID";
-                        jidErrorElem.style.display = '';
-                        jidElem.disabled = false;
+                        uidErrorElem.innerHTML = jqXHR.responseText;
+                        uidErrorElem.style.display = '';
+                        uidElem.disabled = false;
                         submitElem.disabled = false;
                     }
                 }
             });
             $.ajax({
-                url: "/code/" + jid,
+                url: "/code/" + uid,
                 type: "GET"
             }).done(function() {
                 var codeFormElem = document.querySelector('form.code');
@@ -40,7 +40,7 @@
                         url: "/login",
                         type: "POST",
                         data: {
-                            jid: jid,
+                            uid: uid,
                             code: code
                         }
                     }).done(function() {
@@ -50,7 +50,7 @@
                 });
             });
         });
-        document.querySelector('#jid').focus();
+        document.querySelector('#uid').focus();
     };
 
     function findURIParameter(parameter) {

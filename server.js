@@ -78,25 +78,30 @@ app.get("/login", function(req, res, next) {
 });
 
 app.post("/login", function(req, res, next) {
-    var jid = req.body.jid,
+    var uid = req.body.uid,
         code = req.body.code;
-    if (login.codeMatches(jid, code)) {
-        login.deleteCode(jid);
-        req.session.user = jid;
+    if (login.codeMatches(uid, code)) {
+        login.deleteCode(uid);
+        req.session.user = uid;
         res.send("ok").end();
     } else {
         res.status(403).send("forbidden").end();
     }
 });
 
-app.get("/code/:jid", function(req, res, next) {
-    if (config.get("adminJIDs").indexOf(req.params.jid) === -1) {
-        res.status(403).send("forbidden").end();
+app.get("/code/:uid", function(req, res, next) {
+    var entry = login.getOrCreateCode(req.params.uid);
+    if (!entry) {
+        res.status(403).send("Wrong UID").end();
         return;
     }
-    var entry = login.getOrCreateCode(req.params.jid);
-    login.sendCode(entry.code, req.params.jid);
-    res.send("ok").end();
+    login.sendCode(entry.code, req.params.uid, function(err) {
+        if (err) {
+            res.status(403).send(err).end();
+        } else {
+            res.send("ok").end();
+        }
+    });
 });
 
 
