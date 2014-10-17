@@ -15,7 +15,7 @@ function authenticate(req, res, next) {
 }
 
 function codeMatches(jid, code) {
-    return codes[jid].code === code;
+    return codes[jid] && codes[jid].code === code;
 }
 
 function deleteCode(jid) {
