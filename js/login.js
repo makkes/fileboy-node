@@ -1,25 +1,25 @@
 (function() {
     window.onload = function() {
         var formElem = document.querySelector('form.jid');
+        var jidElem = document.querySelector('#jid'),
+            submitElem = document.querySelector('form.jid .submit');
         formElem.addEventListener('submit', function(ev) {
-            var jidElem = document.querySelector('#jid'),
-                submitElem = document.querySelector('form.jid .submit'),
-                codeErrorElem = document.querySelector('form.code .error'),
+
+            var codeErrorElem = document.querySelector('form.code .error'),
                 jidErrorElem = formElem.querySelector('.error'),
                 jid = jidElem.value;
 
-            jidErrorElem.innerHTML = "";
+            jidErrorElem.style.display = "none";
             ev.preventDefault();
-            jidElem.disabled = true;
-            submitElem.disabled = true;
-
 
             $(document).ajaxError(function(event, jqXHR, ajaxSettings, error) {
                 if (jqXHR.status === 403) {
                     if (ajaxSettings.url === "/login") {
                         codeErrorElem.innerHTML = "Wrong code";
+                        codeErrorElem.style.display = '';
                     } else if (ajaxSettings.url.substring(0, 6) === "/code/") {
                         jidErrorElem.innerHTML = "Wrong JID";
+                        jidErrorElem.style.display = '';
                         jidElem.disabled = false;
                         submitElem.disabled = false;
                     }
@@ -33,7 +33,7 @@
                 codeFormElem.style.display = "block";
                 document.querySelector('#code').focus();
                 codeFormElem.addEventListener('submit', function(ev) {
-                    codeErrorElem.innerHTML = "";
+                    codeErrorElem.style.display = "none";
                     var code = document.querySelector('#code').value;
                     ev.preventDefault();
                     $.ajax({

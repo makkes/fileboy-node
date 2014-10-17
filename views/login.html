@@ -1,18 +1,35 @@
 {% extends "layout.html" %}
+
+{% block head %}
+<link href="/css/login.css" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
 
+<div class="container">
 
-<form class="jid">
-    JID: <input type="text" id="jid">
-    <input type="submit" value="Login" class="submit">
-    <span class="error"></span>
+<p>
+
+<form class="jid form-signin" role="form">
+    <h2>Please sign in</h2>
+    <input type="text" class="form-control" placeholder="JID" required autofocus id="jid">
+    <div class="alert alert-danger error" style="display:none;"></div>
+    <button type="submit" class="btn btn-lg btn-primary btn-block submit">Request Code</button>
 </form>
 
-<form class="code" style="display:none;">
-    Code: <input type="text" id="code">
-    <input type="submit" value="Confirm" class="submit">
-    <span class="error"></span>
+</p>
+
+<p>
+
+<form class="code form-signin" style="display:none;" role="form">
+    <input type="text" class="form-control" id="code" placeholder="Code" required autofocus>
+    <div class="alert alert-danger error" style="display:none;"></div>
+    <button type="submit" class="btn btn-lg btn-primary btn-block submit" value="Confirm">Login</button>
 </form>
+
+</p>
+
+</div>
 
 <script src="/js/login.js"></script>
 
