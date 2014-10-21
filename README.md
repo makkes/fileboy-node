@@ -69,7 +69,7 @@ has to be entered as a valid URI such as 'xmpp:alice@example.org' or
 'mailto:bob@example.org'.
 
 If you want the UID+Code combination, set the `codeLoginEnabled` configuration
-parameter to `true`, configure your transports accordingly and add all authorized users to the `adminUIDs` array.
+parameter to `true`, configure your transports accordingly and add all authorized users to the `users` array. Users with the `admin` role are authorized to open the admin view. All others are only allowed to upload files.
 
 If you do not want fileboy to handle authorization for you, just run it behing
 an HTTP proxy with authentication for uploads. This is a sample nginx

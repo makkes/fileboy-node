@@ -23,10 +23,12 @@ app.set('views', __dirname + '/views');
  */
 
 app.use(session({
-    secret: config.get('session-secret')
+    secret: config.get('session-secret'),
+    resave: false
 }));
 if (config.get('codeLoginEnabled')) {
-    app.use(["/$", "/admin", "/upload"], login.authenticate);
+    app.use(["/$", "/upload"], login.authenticate('user'));
+    app.use(["/admin"], login.authenticate('admin'));
 }
 app.use("/uploads", track.track_download);
 app.use("/uploads", express.static(config.get('upload-folder')));
@@ -83,9 +85,7 @@ app.get("/login", function(req, res, next) {
 app.post("/login", function(req, res, next) {
     var uid = req.body.uid,
         code = req.body.code;
-    if (login.codeMatches(uid, code)) {
-        login.deleteCode(uid);
-        req.session.user = uid;
+    if (login.login(uid, code, req)) {
         res.send("ok").end();
     } else {
         res.status(403).send("forbidden").end();

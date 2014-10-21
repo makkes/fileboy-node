@@ -25,11 +25,18 @@
                 },
                 "sender": "SENDER"
             }
-        },
-        "adminUIDs": [
-            "xmpp:ADMIN_1",
-            "pushbullet:",
-            "mailto:ADMIN_2"
-        ]
+        }
+        /*,
+        "users": {
+            "xmpp:ADMIN_1": {
+                "roles": ["user", "admin"]
+            },
+            "pushbullet:": {
+                "roles": ["user"]
+            },
+            "mailto:ADMIN_2": {
+                "roles": ["user", "admin"]
+            }
+        }*/
     }
 }

@@ -7,17 +7,33 @@ var nodemailer = require('nodemailer');
 var codes = {};
 var CODE_LIFETIME = 30000;
 
-function authenticate(req, res, next) {
-    var session = req.session;
-    if (session.user) {
-        next();
-    } else {
-        res.redirect("/login?return=" + encodeURIComponent(req.url));
-    }
+function authenticate(role) {
+    return function(req, res, next) {
+        var session = req.session;
+        if (session.user) {
+            if (session.user.roles.indexOf(role) !== -1) {
+                next();
+            } else {
+                res.status(403).send("Missing privileges").end();
+            }
+        } else {
+            res.redirect("/login?return=" + encodeURIComponent(req.originalUrl));
+        }
+    };
 }
 
-function codeMatches(uid, code) {
-    return codes[uid] && codes[uid].code === code;
+function login(uid, code, req) {
+    var user = config.get("codeLogin.users")[uid],
+        savedCode = codes[uid];
+    deleteCode(uid);
+    if (!(user && savedCode && savedCode.code === code)) {
+        return false;
+    }
+    req.session.user = {
+        uid: uid,
+        roles: user.roles
+    };
+    return true;
 }
 
 function deleteCode(uid) {
@@ -25,7 +41,7 @@ function deleteCode(uid) {
 }
 
 function getOrCreateCode(uid) {
-    if (config.get("codeLogin.adminUIDs").indexOf(uid) === -1) {
+    if (Object.keys(config.get("codeLogin.users")).indexOf(uid) === -1) {
         return;
     }
     if (!codes[uid]) {
@@ -138,6 +154,6 @@ module.exports = {
     sendCode: sendCode,
     codes: codes,
     getOrCreateCode: getOrCreateCode,
-    codeMatches: codeMatches,
+    login: login,
     deleteCode: deleteCode
 };
