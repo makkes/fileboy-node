@@ -25,6 +25,9 @@ app.set('views', __dirname + '/views');
 app.use(session({
     secret: config.get('session-secret')
 }));
+if (config.get('codeLoginEnabled')) {
+    app.use(["/$", "/admin", "/upload"], login.authenticate);
+}
 app.use("/uploads", track.track_download);
 app.use("/uploads", express.static(config.get('upload-folder')));
 app.use('/css', express.static(__dirname + '/css'));
@@ -48,7 +51,7 @@ app.get("/guest/:pass", function(req, res) {
                 upload_url: "/guest/upload/" + pass
             });
         } else {
-            res.send(403);
+            res.status(403).send("Forbidden").end();
         }
     });
 });
@@ -58,7 +61,7 @@ function check_pass(req, res, next) {
         if (invited) {
             next();
         } else {
-            res.send(403);
+            res.status(403).send("Forbidden").end();
         }
     });
 }
@@ -110,10 +113,6 @@ app.get("/code/:uid", function(req, res, next) {
  */
 
 
-if (config.get('codeLoginEnabled')) {
-    app.use("/", login.authenticate);
-}
-
 app.get("/", function(req, res) {
     res.render('index', {
         upload_url: config.get("upload-url")
@@ -135,6 +134,7 @@ function upload(req, res, next) {
                     url: config.get("base-url") + "/uploads/" + newdir + "/" + newfile
                 });
                 res.end();
+                next();
             });
         });
     });
