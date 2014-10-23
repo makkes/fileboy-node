@@ -30,7 +30,10 @@
                 }
             });
             $.ajax({
-                url: "/code/" + uid,
+                url: "/code/" + encodeURIComponent(uid),
+                data: {
+                    target: findURIParameter('target')
+                },
                 type: "GET"
             }).done(function() {
                 var codeFormElem = document.querySelector('form.code');
@@ -50,7 +53,7 @@
                         }
                     }).done(function() {
                         console.log("logged in");
-                        window.location.replace(findURIParameter('return') || "/");
+                        window.location.replace(findURIParameter('target') || "/");
                     });
                 });
             });

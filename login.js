@@ -17,7 +17,7 @@ function authenticate(role) {
                 res.status(403).send("Missing privileges").end();
             }
         } else {
-            res.redirect("/login?return=" + encodeURIComponent(req.originalUrl));
+            res.redirect("/login?target=" + encodeURIComponent(req.originalUrl));
         }
     };
 }
@@ -69,16 +69,20 @@ var transports = {
     mailto: emailTransport
 };
 
-function sendCode(code, receiverURIString, cb) {
+function sendCode(code, receiverURIString, target, baseUrl, cb) {
     var receiverURI = url.parse(receiverURIString);
     var transport = receiverURI.protocol.substring(0, receiverURI.protocol.length - 1);
     if (!transports[transport]) {
         throw new Error("Unknown transport " + transport);
     }
-    transports[transport](code, receiverURI, config.get('codeLogin.transports')[transport], cb);
+    var codeURL = baseUrl +
+        "/login?uid=" + encodeURIComponent(receiverURI.format()) +
+        "&code=" + encodeURIComponent(code) +
+        "&target=" + encodeURIComponent(target);
+    transports[transport](code, codeURL, receiverURI, config.get('codeLogin.transports')[transport], target, cb);
 }
 
-function emailTransport(code, receiverURI, transportConfig, cb) {
+function emailTransport(code, codeURL, receiverURI, transportConfig, target, cb) {
     var transporter = nodemailer.createTransport({
         service: transportConfig.service,
         auth: {
@@ -90,7 +94,7 @@ function emailTransport(code, receiverURI, transportConfig, cb) {
         from: transportConfig.sender,
         to: receiverURI.auth + "@" + receiverURI.host,
         subject: "Fileboy Access Code",
-        text: code
+        text: code + "\n" + codeURL
     };
     transporter.sendMail(mailOptions, function(err, info) {
         if (err) {
@@ -102,7 +106,7 @@ function emailTransport(code, receiverURI, transportConfig, cb) {
     });
 }
 
-function pushbulletTransport(code, receiverURI, transportConfig, cb) {
+function pushbulletTransport(code, codeURL, receiverURI, transportConfig, target, cb) {
     var request = require('request');
 
     request.post({
@@ -112,7 +116,7 @@ function pushbulletTransport(code, receiverURI, transportConfig, cb) {
                 device_iden: transportConfig.device_iden, // Firefox
                 type: "note",
                 title: "Fileboy Access Code",
-                body: code
+                body: code + "\n" + codeURL
             }
         },
 
@@ -127,7 +131,7 @@ function pushbulletTransport(code, receiverURI, transportConfig, cb) {
     ).auth(transportConfig.accessToken, "", true);
 }
 
-function xmppTransport(code, receiverURI, transportConfig, cb) {
+function xmppTransport(code, codeURL, receiverURI, transportConfig, target, cb) {
     var client = new xmpp.Client({
         jid: transportConfig.sender.jid,
         password: transportConfig.sender.password
@@ -136,7 +140,7 @@ function xmppTransport(code, receiverURI, transportConfig, cb) {
         var stanza = new xmpp.Stanza.Element('message', {
             to: receiverURI.auth + "@" + receiverURI.host,
             type: 'chat'
-        }).c('body').t(code);
+        }).c('body').t(code + "\n" + codeURL);
         client.send(stanza);
         setTimeout(function() {
             client.end();

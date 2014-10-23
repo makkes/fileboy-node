@@ -40,6 +40,30 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+function check_pass(req, res, next) {
+    guest.is_invited(req.params.pass, function(err, invited) {
+        if (invited) {
+            next();
+        } else {
+            res.status(403).send("Forbidden").end();
+        }
+    });
+}
+
+function revoke_pass(req, res, next) {
+    guest.revoke(req.params.pass, function() {
+        next();
+    });
+}
+
+function sanitizeRedirectTarget(target) {
+    var sanitized = target || "/";
+    if (sanitized.substr(0, 2) === "//") {
+        sanitized = sanitized.substr(1);
+    }
+    return sanitized;
+}
+
 /**
  * guest URLs (not protected by proxy)
  */
@@ -58,28 +82,23 @@ app.get("/guest/:pass", function(req, res) {
     });
 });
 
-function check_pass(req, res, next) {
-    guest.is_invited(req.params.pass, function(err, invited) {
-        if (invited) {
-            next();
-        } else {
-            res.status(403).send("Forbidden").end();
-        }
-    });
-}
-
-function revoke_pass(req, res, next) {
-    guest.revoke(req.params.pass, function() {
-        next();
-    });
-}
-
 /**
  * public URLs
  */
 
 app.get("/login", function(req, res, next) {
-    res.render('login');
+    if (req.query.uid && req.query.code) {
+        var uid = req.query.uid,
+            code = req.query.code,
+            target = req.query.target || "/";
+        if (login.login(uid, code, req)) {
+            res.redirect(sanitizeRedirectTarget(target));
+        } else {
+            res.status(403).send("forbidden").end();
+        }
+    } else {
+        res.render('login');
+    }
 });
 
 app.post("/login", function(req, res, next) {
@@ -93,12 +112,14 @@ app.post("/login", function(req, res, next) {
 });
 
 app.get("/code/:uid", function(req, res, next) {
-    var entry = login.getOrCreateCode(req.params.uid);
+    var entry = login.getOrCreateCode(req.params.uid),
+        baseUrl = req.protocol + "://" + req.get('host');
     if (!entry) {
         res.status(403).send("Wrong UID").end();
         return;
     }
-    login.sendCode(entry.code, req.params.uid, function(err) {
+
+    login.sendCode(entry.code, req.params.uid, req.query.target, baseUrl, function(err) {
         if (err) {
             res.status(403).send(err).end();
         } else {
