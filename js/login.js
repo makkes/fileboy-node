@@ -2,12 +2,16 @@
     window.onload = function() {
         var formElem = document.querySelector('form.uid');
         var uidElem = document.querySelector('#uid'),
-            submitElem = document.querySelector('form.uid .submit');
+            submitElem = document.querySelector('form.uid .submit'),
+            infoElem = document.querySelector('form.uid .alert-info');
         formElem.addEventListener('submit', function(ev) {
 
             var codeErrorElem = document.querySelector('form.code .error'),
                 uidErrorElem = formElem.querySelector('.error'),
                 uid = uidElem.value;
+
+            infoElem.style.display = "";
+            infoElem.innerHTML = "Please wait...";
 
             uidErrorElem.style.display = "none";
             ev.preventDefault();
@@ -30,6 +34,7 @@
                 type: "GET"
             }).done(function() {
                 var codeFormElem = document.querySelector('form.code');
+                infoElem.style.display = "none";
                 codeFormElem.style.display = "block";
                 document.querySelector('#code').focus();
                 codeFormElem.addEventListener('submit', function(ev) {
