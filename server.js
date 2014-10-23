@@ -113,7 +113,7 @@ app.post("/login", function(req, res, next) {
 
 app.get("/code/:uid", function(req, res, next) {
     var entry = login.getOrCreateCode(req.params.uid),
-        baseUrl = req.protocol + "://" + req.get('host');
+        baseUrl = config.get("base-url");
     if (!entry) {
         res.status(403).send("Wrong UID").end();
         return;
