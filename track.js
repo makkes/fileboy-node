@@ -3,8 +3,8 @@ var sqlite3 = require('sqlite3');
 
 function track_upload(user, file, callback) {
     var db = new sqlite3.Database(config.get("database"));
-    var stmt = db.prepare('INSERT INTO stats(file, uploader) VALUES(?, ?)');
-    stmt.run(file, user, function(err) {
+    var stmt = db.prepare('INSERT INTO stats(file, uploader, downloads) VALUES(?, ?, ?)');
+    stmt.run(file, user, 0, function(err) {
         stmt.finalize();
         db.close();
         callback();
@@ -18,8 +18,8 @@ function track_download(req, res, next) {
     stmt.get(filename, function(err, row) {
         stmt.finalize();
         if (!row) {
-            stmt = db.prepare('INSERT INTO stats VALUES(?, ?)');
-            stmt.run(filename, 1, function(err) {
+            stmt = db.prepare('INSERT INTO stats(file, uploader, downloads) VALUES(?, ?, ?)');
+            stmt.run(filename, "", 1, function(err) {
                 stmt.finalize();
                 db.close();
             });
