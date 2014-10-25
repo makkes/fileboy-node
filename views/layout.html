@@ -6,9 +6,22 @@
         <title>Fileboy</title>
         <link href="/css/fileboy.css" rel="stylesheet">
         <link href="/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/login.css" rel="stylesheet">
         {% block head %}{% endblock %}
     </head>
     <body>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a href="/" class="navbar-brand">Fileboy</a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="/my/files">My Files</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
         {% block body %}{% endblock %}
 
         <script src="/js/jquery.min.js"></script>

@@ -164,6 +164,18 @@ function upload(req, res, next) {
     req.pipe(req.busboy);
 }
 
+app.get("/my/files", login.authenticate("user"), function(req, res) {
+    track.get_files(login.loggedInUser(req), function(err, files) {
+        files.forEach(function(file) {
+            file.url = config.get("base-url") + "/uploads/" + file.file;
+            file.file = path.basename(file.file);
+        });
+        res.render('myfiles', {
+            files: files
+        });
+    });
+});
+
 app.get("/admin", function(req, res) {
     track.get_download_stats(function(stats) {
         helpers.walk(config.get("upload-folder"), function(err, results) {

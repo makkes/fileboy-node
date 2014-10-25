@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>My Files</h1>
+
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    File
+                </th>
+            </tr>
+        </thead>
+{% for file in files %}
+        <tr>
+            <td><a href="{{file.url}}">{{file.file}}</a></td>
+        </tr>
+{% endfor %}
+    </table>
+
+</div>
+
+<!--script src="/js/fileboy.js"></script-->
+<script src="/js/shortcut.js"></script>
+
+{% endblock %}
