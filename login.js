@@ -7,6 +7,10 @@ var nodemailer = require('nodemailer');
 var codes = {};
 var CODE_LIFETIME = 30000;
 
+function loggedInUser(req) {
+    return req.session && req.session.user.uid;
+}
+
 function authenticate(role) {
     return function(req, res, next) {
         var session = req.session;
@@ -159,5 +163,6 @@ module.exports = {
     codes: codes,
     getOrCreateCode: getOrCreateCode,
     login: login,
-    deleteCode: deleteCode
+    deleteCode: deleteCode,
+    loggedInUser: loggedInUser
 };

@@ -155,7 +155,9 @@ function upload(req, res, next) {
                     url: config.get("base-url") + "/uploads/" + newdir + "/" + newfile
                 });
                 res.end();
-                next();
+                track.track_upload(login.loggedInUser(req), path.join('/', newdir, newfile), function(err) {
+                    next();
+                });
             });
         });
     });

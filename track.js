@@ -1,6 +1,16 @@
 var config = require('config');
 var sqlite3 = require('sqlite3');
 
+function track_upload(user, file, callback) {
+    var db = new sqlite3.Database(config.get("database"));
+    var stmt = db.prepare('INSERT INTO stats(file, uploader) VALUES(?, ?)');
+    stmt.run(file, user, function(err) {
+        stmt.finalize();
+        db.close();
+        callback();
+    });
+}
+
 function track_download(req, res, next) {
     var filename = req.url;
     var db = new sqlite3.Database(config.get("database"));
@@ -47,5 +57,6 @@ function delete_stats(file, callback) {
 module.exports = {
     delete_stats: delete_stats,
     get_download_stats: get_download_stats,
-    track_download: track_download
+    track_download: track_download,
+    track_upload: track_upload
 };

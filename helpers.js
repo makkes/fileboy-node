@@ -4,6 +4,7 @@ var moment = require('moment');
 var config = require('config');
 var fs = require('fs');
 var sqlite = require('sqlite3');
+var migrations = require('migrations');
 
 /**
  * Helpers
@@ -12,7 +13,7 @@ var sqlite = require('sqlite3');
 function init_db(dbfile, callback) {
     fs.exists(dbfile, function(exists) {
         if (exists) {
-            callback();
+            migrations.run(dbfile, callback);
             return;
         }
         var db = new sqlite.Database(dbfile, function(err) {
@@ -31,7 +32,7 @@ function init_db(dbfile, callback) {
                 });
             });
             db.close();
-            callback();
+            migrations.run(dbfile, callback);
         });
     });
 }
