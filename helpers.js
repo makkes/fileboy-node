@@ -4,7 +4,7 @@ var moment = require('moment');
 var config = require('config');
 var fs = require('fs');
 var sqlite = require('sqlite3');
-var migrations = require('migrations');
+var migrations = require('./migrations');
 
 /**
  * Helpers
