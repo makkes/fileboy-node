@@ -11,12 +11,14 @@
             <tr>
                 <th>File</th>
                 <th>Date</th>
+                <th>Downloads</th>
             </tr>
         </thead>
 {% for file in files %}
         <tr>
             <td><a href="{{file.url}}">{{file.file}}</a></td>
             <td>{{file.date}}</td>
+            <td>{{file.downloads}}</td>
         </tr>
 {% endfor %}
     </table>
