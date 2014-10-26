@@ -13,8 +13,8 @@ function get_files(user, callback) {
 
 function track_upload(user, file, callback) {
     var db = new sqlite3.Database(config.get("database"));
-    var stmt = db.prepare('INSERT INTO stats(file, uploader, downloads) VALUES(?, ?, ?)');
-    stmt.run(file, user, 0, function(err) {
+    var stmt = db.prepare('INSERT INTO stats(file, uploader, downloads, date) VALUES(?, ?, ?, ?)');
+    stmt.run(file, user, 0, Date.now(), function(err) {
         stmt.finalize();
         db.close();
         callback();

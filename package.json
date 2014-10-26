@@ -21,7 +21,13 @@
         "start": "node server.js"
     },
     "main": "server.js",
-    "devDependencies": {},
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "shelljs": "^0.3.0",
+        "load-grunt-tasks": "^1.0.0",
+        "grunt-contrib-jshint": "^0.10.0",
+        "grunt-jsbeautifier": "^0.2.7"
+    },
     "author": "Max Jonas Werner <mail@makk.es>",
     "license": "BSD-2-Clause"
 }

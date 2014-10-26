@@ -9,14 +9,14 @@
     <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <th>
-                    File
-                </th>
+                <th>File</th>
+                <th>Date</th>
             </tr>
         </thead>
 {% for file in files %}
         <tr>
             <td><a href="{{file.url}}">{{file.file}}</a></td>
+            <td>{{file.date}}</td>
         </tr>
 {% endfor %}
     </table>

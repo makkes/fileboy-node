@@ -8,11 +8,13 @@ var fs = require('fs');
 var config = require('config');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
+var moment = require('moment');
 
 var track = require('./track');
 var helpers = require('./helpers');
 var guest = require('./guest');
 var login = require('./login');
+var migrations = require('./migrations');
 
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
@@ -169,6 +171,7 @@ app.get("/my/files", login.authenticate("user"), function(req, res) {
         files.forEach(function(file) {
             file.url = config.get("base-url") + "/uploads/" + file.file;
             file.file = path.basename(file.file);
+            file.date = moment(file.date).format('LLL');
         });
         res.render('myfiles', {
             files: files
@@ -263,6 +266,13 @@ var server = app.listen(3000, function() {
             if (err) {
                 console.log(err);
                 process.exit(1);
+            } else {
+                migrations.run(config.get("database"), function(err) {
+                    if (err) {
+                        console.log(err);
+                        process.exit(1);
+                    }
+                });
             }
         });
     });
