@@ -8,7 +8,7 @@ var codes = {};
 var CODE_LIFETIME = 30000;
 
 function loggedInUser(req) {
-    return req.session && req.session.user.uid;
+    return req.session && req.session.user && req.session.user.uid;
 }
 
 function authenticate(role) {
