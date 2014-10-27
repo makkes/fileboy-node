@@ -66,6 +66,20 @@ function sanitizeRedirectTarget(target) {
     return sanitized;
 }
 
+function sortByFieldDescending(array, field) {
+    var res = array.slice();
+    res.sort(function(a, b) {
+        if (a[field] < b[field]) {
+            return 1;
+        }
+        if (a[field] > b[field]) {
+            return -1;
+        }
+        return 0;
+    });
+    return res;
+}
+
 /**
  * guest URLs (not protected by proxy)
  */
@@ -171,10 +185,10 @@ app.get("/my/files", login.authenticate("user"), function(req, res) {
         files.forEach(function(file) {
             file.url = config.get("base-url") + "/uploads/" + file.file;
             file.file = path.basename(file.file);
-            file.date = moment(file.date).format('LLL');
+            file.printableDate = moment(file.date).format('LLL');
         });
         res.render('myfiles', {
-            files: files
+            files: sortByFieldDescending(files, "date")
         });
     });
 });
@@ -198,18 +212,9 @@ app.get("/admin", function(req, res) {
                         infos.push(info);
                         total_size += info.size;
                         if (--pending <= 0) {
-                            infos.sort(function(a, b) {
-                                if (a.timestamp < b.timestamp) {
-                                    return 1;
-                                }
-                                if (a.timestamp > b.timestamp) {
-                                    return -1;
-                                }
-                                return 0;
-                            });
                             res.header("Cache-Control", "no-cache, no-store, must-revalidate");
                             res.render('admin', {
-                                files: infos,
+                                files: sortByFieldDescending(infos, "timestamp"),
                                 total_size: total_size,
                                 guest_passes: guest_passes
                             });

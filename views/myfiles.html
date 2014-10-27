@@ -17,7 +17,7 @@
 {% for file in files %}
         <tr>
             <td><a href="{{file.url}}">{{file.file}}</a></td>
-            <td>{{file.date}}</td>
+            <td>{{file.printableDate}}</td>
             <td>{{file.downloads}}</td>
         </tr>
 {% endfor %}
