@@ -11,19 +11,32 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a href="/" class="navbar-brand">Fileboy</a>
-                    <ul class="nav navbar-nav">
-                        <li><a href="/my/files">My Files</a></li>
-                    </ul>
-                </div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">Fileboy</a>
             </div>
-        </nav>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/my/files">My Files</a></li>
+                    {% if settings.roles && settings.roles.indexOf("admin") !== -1 %}
+                    <li><a href="/admin">Admin</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
 
         {% block body %}{% endblock %}
 
         <script src="/js/jquery.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
     </body>
 </html>

@@ -32,6 +32,10 @@ if (config.get('codeLoginEnabled')) {
     app.use(["/$", "/upload"], login.authenticate('user'));
     app.use(["/admin"], login.authenticate('admin'));
 }
+app.use(function(req, res, next) {
+    app.set("roles", login.loggedInUser(req).roles);
+    next();
+});
 app.use("/uploads", track.track_download);
 app.use("/uploads", express.static(config.get('upload-folder')));
 app.use('/css', express.static(__dirname + '/css'));
@@ -171,7 +175,7 @@ function upload(req, res, next) {
                     url: config.get("base-url") + "/uploads/" + newdir + "/" + newfile
                 });
                 res.end();
-                track.track_upload(login.loggedInUser(req), path.join('/', newdir, newfile), function(err) {
+                track.track_upload(login.loggedInUser(req).uid, path.join('/', newdir, newfile), function(err) {
                     next();
                 });
             });
@@ -181,7 +185,7 @@ function upload(req, res, next) {
 }
 
 app.get("/my/files", login.authenticate("user"), function(req, res) {
-    track.get_files(login.loggedInUser(req), function(err, files) {
+    track.get_files(login.loggedInUser(req).uid, function(err, files) {
         files.forEach(function(file) {
             file.url = config.get("base-url") + "/uploads/" + file.file;
             file.file = path.basename(file.file);
