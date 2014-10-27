@@ -1,4 +1,4 @@
-(function() {
+var FBAdmin = (function() {
     function size(fileSizeInBytes) {
         var i = -1;
         var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -192,7 +192,7 @@
         });
     }
 
-    window.onload = function() {
+    function init() {
         var firstEntry = document.querySelector("#admin_files .fentry");
         if (firstEntry) {
             firstEntry.classList.toggle("active");
@@ -201,5 +201,9 @@
         displayTotalSize();
         initEventListeners();
         initShortcuts();
+    }
+
+    return {
+        init: init
     };
 }());

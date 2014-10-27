@@ -26,7 +26,10 @@
         "shelljs": "^0.3.0",
         "load-grunt-tasks": "^1.0.0",
         "grunt-contrib-jshint": "^0.10.0",
-        "grunt-jsbeautifier": "^0.2.7"
+        "grunt-jsbeautifier": "^0.2.7",
+        "grunt-contrib-uglify": "^0.6.0",
+        "grunt-contrib-clean": "^0.6.0",
+        "grunt-githooks": "^0.3.1"
     },
     "author": "Max Jonas Werner <mail@makk.es>",
     "license": "BSD-2-Clause"

@@ -1,5 +1,5 @@
-(function() {
-    window.onload = function() {
+var FBLogin = (function() {
+    function init() {
         var formElem = document.querySelector('form.uid');
         var uidElem = document.querySelector('#uid'),
             submitElem = document.querySelector('form.uid .submit'),
@@ -59,7 +59,7 @@
             });
         });
         document.querySelector('#uid').focus();
-    };
+    }
 
     function findURIParameter(parameter) {
         var tmp, result;
@@ -73,4 +73,8 @@
         });
         return result;
     }
+
+    return {
+        init: init
+    };
 }());
