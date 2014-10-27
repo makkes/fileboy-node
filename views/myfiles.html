@@ -6,22 +6,24 @@
 
     <h1>My Files</h1>
 
-    <table class="table table-hover table-striped">
-        <thead>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Date</th>
+                    <th>Downloads</th>
+                </tr>
+            </thead>
+            {% for file in files %}
             <tr>
-                <th>File</th>
-                <th>Date</th>
-                <th>Downloads</th>
+                <td><a href="{{file.url}}">{{file.file}}</a></td>
+                <td>{{file.printableDate}}</td>
+                <td>{{file.downloads}}</td>
             </tr>
-        </thead>
-{% for file in files %}
-        <tr>
-            <td><a href="{{file.url}}">{{file.file}}</a></td>
-            <td>{{file.printableDate}}</td>
-            <td>{{file.downloads}}</td>
-        </tr>
-{% endfor %}
-    </table>
+            {% endfor %}
+        </table>
+    </div>
 
 </div>
 
