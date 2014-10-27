@@ -8,24 +8,26 @@
     Active guest passes: <span id="pass_count">{{ guest_passes.length }}</span> (<a id="revoke_passes" href="#">revoke all</a>)
 </div>
 
-<table id="admin_files">
-    <tr class="head">
-        <td class="fname">Name</td>
-        <td class="fsize" data-bytes="{{total_size}}">Size <span id="total_size"><span></td>
-        <td class="ftime">Uploaded</td>
-        <td class="downloads">Downloads</td>
-        <td class="clearfix"></td>
-    </tr>
-{% for info in files %}
-    <tr class="fentry">
-        <td class="fname"><a title="{{info.name}}" href="{{info.url}}">{{info.name}}</a></td>
-        <td class="fsize" data-bytes="{{info.size}}">{{info.print_size}}</td>
-        <td class="ftime">{{info.time}}</td>
-        <td class="downloads">{{info.downloads}}</td>
-        <td class="actions"><a data-url="{{info.url}}" class="delete" href="#"><i class="fa fa-trash-o"></i></a></td>
-    </tr>
-{% endfor %}
-</table>
+<div class="container">
+    <table id="admin_files" class="table">
+        <tr class="head">
+            <td class="fname">Name</td>
+            <td class="fsize" data-bytes="{{total_size}}">Size <span id="total_size"><span></td>
+            <td class="ftime">Uploaded</td>
+            <td class="downloads">Downloads</td>
+            <td></td>
+        </tr>
+    {% for info in files %}
+        <tr class="fentry">
+            <td class="fname"><a title="{{info.name}}" href="{{info.url}}">{{info.name}}</a></td>
+            <td class="fsize" data-bytes="{{info.size}}">{{info.print_size}}</td>
+            <td class="ftime">{{info.time}}</td>
+            <td class="downloads">{{info.downloads}}</td>
+            <td class="actions"><a data-url="{{info.url}}" class="delete" href="#"><i class="fa fa-trash-o"></i></a></td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
 
 <script src="/js/fileboy.js"></script>
 <script src="/js/shortcut.js"></script>

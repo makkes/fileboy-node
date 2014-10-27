@@ -67,22 +67,9 @@ a i[class^="fa"] {
     color: black;
 }
 
-#admin_files {
-    max-width: 970px;
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    table-layout: fixed;
-}
 
 #admin_files .head {
     background-color: #b5baff;
-}
-
-#admin_files tr {
-    border-bottom: 1px solid #f0f1ff;
-    line-height: 32px;
-    padding: 0 0.5em;
 }
 
 #admin_files tr.fentry.active {
@@ -96,30 +83,4 @@ a i[class^="fa"] {
 
 #admin_files tr.fentry.waiting a {
     pointer-events: none;
-}
-
-
-#admin_files .fname {
-    width: 45%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-right: 0.5em;
-}
-
-#admin_files .fsize {
-    width: 15%;
-}
-
-#admin_files .ftime {
-    width: 25%;
-}
-
-#admin_files .downloads {
-    width: 5%;
-}
-
-#admin_files .actions {
-    text-align: right;
-    padding-right: 5px;
 }
