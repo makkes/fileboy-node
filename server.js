@@ -259,6 +259,17 @@ app.get("/admin/revoke_passes", function(req, res) {
     });
 });
 
+app.get("/admin/sessions", function(req, res, next) {
+    var sessions = req.sessionStore.sessions;
+    Object.keys(sessions).forEach(function(sessionKey) {
+        var session = JSON.parse(sessions[sessionKey]);
+        if (session && session.user) {
+            res.write(session.user.uid + "\n");
+        }
+    });
+    res.end();
+});
+
 /**
  * Startup
  */
