@@ -8,6 +8,7 @@ var FBLogin = (function() {
 
             var codeErrorElem = document.querySelector('form.code .error'),
                 uidErrorElem = formElem.querySelector('.error'),
+                selectedTransport = formElem.querySelector('#transport').value,
                 uid = uidElem.value;
 
             infoElem.style.display = "";
@@ -22,6 +23,7 @@ var FBLogin = (function() {
                         codeErrorElem.innerHTML = jqXHR.responseText;
                         codeErrorElem.style.display = '';
                     } else if (ajaxSettings.url.substring(0, 6) === "/code/") {
+                        infoElem.style.display = "none";
                         uidErrorElem.innerHTML = jqXHR.responseText;
                         uidErrorElem.style.display = '';
                         uidElem.disabled = false;
@@ -30,7 +32,7 @@ var FBLogin = (function() {
                 }
             });
             $.ajax({
-                url: "/code/" + encodeURIComponent(uid),
+                url: "/code/" + [encodeURIComponent(uid), encodeURIComponent(selectedTransport)].join("/"),
                 data: {
                     target: findURIParameter('target')
                 },

@@ -28,14 +28,13 @@
         }
         /*,
         "users": {
-            "xmpp:ADMIN_1": {
-                "roles": ["user", "admin"]
-            },
-            "pushbullet:": {
-                "roles": ["user"]
-            },
-            "mailto:ADMIN_2": {
-                "roles": ["user", "admin"]
+            "ADMIN_1": {
+                "roles": ["user", "admin"],
+                "transports": {
+                    "mailto": "admin1@example.org",
+                    "xmpp": "admin1@example.com",
+                    "pushbullet": ""
+                }
             }
         }*/
     }

@@ -117,7 +117,9 @@ app.get("/login", function(req, res, next) {
             res.status(403).send("forbidden").end();
         }
     } else {
-        res.render('login');
+        res.render('login', {
+            transports: Object.keys(config.codeLogin.transports)
+        });
     }
 });
 
@@ -131,7 +133,7 @@ app.post("/login", function(req, res, next) {
     }
 });
 
-app.get("/code/:uid", function(req, res, next) {
+app.get("/code/:uid/:transport", function(req, res, next) {
     var entry = login.getOrCreateCode(req.params.uid),
         baseUrl = config.get("base-url");
     if (!entry) {
@@ -139,7 +141,7 @@ app.get("/code/:uid", function(req, res, next) {
         return;
     }
 
-    login.sendCode(entry.code, req.params.uid, req.query.target, baseUrl, function(err) {
+    login.sendCode(entry.code, req.params.uid, req.params.transport, req.query.target, baseUrl, function(err) {
         if (err) {
             res.status(403).send(err).end();
         } else {
