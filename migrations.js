@@ -7,10 +7,18 @@ var migrations = [
     createVersionTable,
     insertUploaderColumn,
     insertDateColumn,
-    migrateDates
+    migrateDates,
+    migrateUIDs
 ];
 
 function run(dbfile, callback) {
+    // backup database
+    try {
+        fs.writeFileSync(dbfile + ".bkp", fs.readFileSync(dbfile));
+    } catch (err) {
+        callback(err);
+        return;
+    }
     var db = new sqlite3.Database(dbfile);
 
     function runMigrations(startIdx, callback) {
@@ -41,6 +49,27 @@ function run(dbfile, callback) {
                 }
             }
         });
+    });
+}
+
+function migrateUIDs(db, callback) {
+    var usersByURI = {};
+    Object.keys(config.codeLogin.users).forEach(function(uid) {
+        Object.keys(config.codeLogin.users[uid].transports).forEach(function(transport) {
+            usersByURI[transport + ":" + config.codeLogin.users[uid].transports[transport]] = uid;
+        });
+    });
+    db.all("SELECT file, uploader FROM stats", function(err, rows) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        rows.forEach(function(row) {
+            if (row.uploader && usersByURI[row.uploader]) {
+                db.run("UPDATE stats SET uploader = ? WHERE file = ?", usersByURI[row.uploader], row.file);
+            }
+        });
+        callback();
     });
 }
 
