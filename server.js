@@ -235,7 +235,7 @@ app.get("/admin", function(req, res) {
 app.post("/admin/delete", function(req, res) {
     var file_parts = req.param('file_path').split("/");
     relative_path = file_parts[file_parts.length - 2] + "/" + file_parts[file_parts.length - 1];
-    file_path = path.resolve(path.join(config.get("upload-folder"), relative_path));
+    file_path = decodeURIComponent(path.resolve(path.join(config.get("upload-folder"), relative_path)));
     track.delete_stats("/" + relative_path, function(err) {
         fs.unlink(file_path, function(err) {
             fs.rmdir(path.resolve(path.join(config.get("upload-folder"), file_parts[file_parts.length - 2])), function(err) {
