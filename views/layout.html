@@ -32,6 +32,11 @@
                     <li><a href="/admin/sessions">Sessions</a></li>
                     {% endif %}
                 </ul>
+                {% if settings.roles && settings.roles.indexOf("user") !== -1 %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+                {% endif %}
             </div>
         </div>
     </div>

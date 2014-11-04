@@ -26,7 +26,8 @@ app.set('views', __dirname + '/views');
 
 app.use(session({
     secret: config.get('session-secret'),
-    resave: false
+    resave: false,
+    unset: 'destroy'
 }));
 if (config.get('codeLoginEnabled')) {
     app.use(["/$", "/upload"], login.authenticate('user'));
@@ -105,6 +106,11 @@ app.get("/guest/:pass", function(req, res) {
 /**
  * public URLs
  */
+
+app.get("/logout", function(req, res, next) {
+    req.session = null;
+    res.redirect("/");
+});
 
 app.get("/login", function(req, res, next) {
     if (req.query.uid && req.query.code) {
