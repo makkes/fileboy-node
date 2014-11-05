@@ -35,7 +35,8 @@ function login(uid, code, req) {
     }
     req.session.user = {
         uid: uid,
-        roles: user.roles
+        roles: user.roles,
+        loggedIn: new Date()
     };
     return true;
 }

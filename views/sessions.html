@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<div class="container">
+
+    <h1>Sessions</h1>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>Logged In</th>
+                </tr>
+            </thead>
+            {% for session in sessions %}
+            <tr>
+                <td>{{session.uid}}</td>
+                <td>{{session.loggedIn}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+

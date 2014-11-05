@@ -269,13 +269,19 @@ app.get("/admin/revoke_passes", function(req, res) {
 
 app.get("/admin/sessions", function(req, res, next) {
     var sessions = req.sessionStore.sessions;
+    var result = [];
     Object.keys(sessions).forEach(function(sessionKey) {
         var session = JSON.parse(sessions[sessionKey]);
         if (session && session.user) {
-            res.write(session.user.uid + "\n");
+            result.push({
+                uid: session.user.uid,
+                loggedIn: moment(session.user.loggedIn).format('LLL')
+            });
         }
     });
-    res.end();
+    res.render('sessions', {
+        sessions: result
+    });
 });
 
 /**
