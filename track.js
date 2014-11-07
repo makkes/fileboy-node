@@ -50,7 +50,10 @@ function get_download_stats(callback) {
     db.all("SELECT * FROM stats", function(err, rows) {
         db.close();
         rows.forEach(function(row) {
-            res[row.file] = row.downloads;
+            res[row.file] = {
+                downloads: row.downloads,
+                uploader: row.uploader
+            };
         });
         callback(res);
     });

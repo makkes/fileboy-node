@@ -79,7 +79,8 @@ function walk(dir, done) {
 
 function info(file, stats, callback) {
     fs.stat(file, function(err, stat) {
-        var relpath = file.replace(config.get("upload-folder"), "");
+        var relpath = file.replace(config.get("upload-folder"), ""),
+            dbStat = stats[relpath] || {};
         mtime = moment(stat.mtime);
         callback({
             url: config.get("base-url") + "/uploads/" + relpath,
@@ -88,7 +89,8 @@ function info(file, stats, callback) {
             print_size: filesize(stat.size),
             time: mtime.format("LLL"),
             timestamp: mtime.format("X"),
-            downloads: stats[relpath] || 0
+            downloads: dbStat.downloads || 0,
+            uploader: dbStat.uploader || ""
         });
     });
 }
