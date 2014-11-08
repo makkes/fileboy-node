@@ -143,16 +143,15 @@ app.get("/code/:uid/:transport", function(req, res, next) {
     var entry = login.getOrCreateCode(req.params.uid),
         baseUrl = config.get("base-url");
     if (!entry) {
-        res.status(403).send("Wrong UID").end();
+        res.send("ok").end(); // do not reveal information about existance of accounts
         return;
     }
 
     login.sendCode(entry.code, req.params.uid, req.params.transport, req.query.target, baseUrl, function(err) {
         if (err) {
-            res.status(403).send(err).end();
-        } else {
-            res.send("ok").end();
+            console.log(err); // do not reveal information about existance of accounts
         }
+        res.send("ok").end();
     });
 });
 
