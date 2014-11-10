@@ -84,3 +84,7 @@ a i[class^="fa"] {
 #admin_files tr.fentry.waiting a {
     pointer-events: none;
 }
+
+.navbar-right > li:first-child {
+    font-weight: bold;
+}

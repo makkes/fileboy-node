@@ -34,7 +34,7 @@ if (config.get('codeLoginEnabled')) {
     app.use(["/admin"], login.authenticate('admin'));
 }
 app.use(function(req, res, next) {
-    app.set("roles", login.loggedInUser(req).roles);
+    app.set("user", login.loggedInUser(req));
     next();
 });
 app.use("/uploads", track.track_download);
