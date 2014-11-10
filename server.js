@@ -167,6 +167,12 @@ app.get("/", function(req, res) {
     });
 });
 
+app.get("/users/me", login.authenticate("user"), function(req, res, next) {
+    res.render('me', {
+        user: login.loggedInUser(req)
+    });
+});
+
 app.post("/upload", upload);
 
 function upload(req, res, next) {
