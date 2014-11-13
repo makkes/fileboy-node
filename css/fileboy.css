@@ -62,20 +62,20 @@ a i[class^="fa"] {
 }
 
 
-#admin_files .head {
+#files .head {
     background-color: #b5baff;
 }
 
-#admin_files tr.fentry.active {
+#files tr.fentry.active {
     background-color: #dee0ff;
 }
 
-#admin_files tr.fentry.waiting * {
+#files tr.fentry.waiting * {
     color: lightgray;
     background-color: #f0f1ff;
 }
 
-#admin_files tr.fentry.waiting a {
+#files tr.fentry.waiting a {
     pointer-events: none;
 }
 

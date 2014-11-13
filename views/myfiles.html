@@ -7,7 +7,7 @@
     <h1>My Files</h1>
 
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
+        <table id="files" class="table table-hover table-striped">
             <thead>
                 <tr>
                     <th>File</th>
@@ -20,11 +20,18 @@
                 <td><a href="{{file.url}}">{{file.file}}</a></td>
                 <td>{{file.printableDate}}</td>
                 <td>{{file.downloads}}</td>
+                <td><a class="delete" data-url="{{file.url}}" href="#"><i class="fa fa-trash-o"></i></a></td>
             </tr>
             {% endfor %}
         </table>
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block footer %}
+
+<script>FBAdmin.init();</script>
 
 {% endblock %}

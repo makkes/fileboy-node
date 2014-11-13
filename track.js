@@ -11,6 +11,16 @@ function get_files(user, callback) {
     });
 }
 
+function get_file(path, callback) {
+    var db = new sqlite3.Database(config.get("database"));
+    var stmt = db.prepare('SELECT * FROM stats WHERE file = ?');
+    stmt.get(path, function(err, row) {
+        stmt.finalize();
+        db.close();
+        callback(null, row);
+    });
+}
+
 function track_upload(user, file, callback) {
     var db = new sqlite3.Database(config.get("database"));
     var stmt = db.prepare('INSERT INTO stats(file, uploader, downloads, date) VALUES(?, ?, ?, ?)');
@@ -72,5 +82,6 @@ module.exports = {
     get_download_stats: get_download_stats,
     track_download: track_download,
     track_upload: track_upload,
-    get_files: get_files
+    get_files: get_files,
+    get_file: get_file
 };

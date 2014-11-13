@@ -11,9 +11,13 @@ var FBAdmin = (function() {
     }
 
     function displayTotalSize(subtrahend) {
-        var size_cell = document.querySelector("#admin_files .head .fsize"),
-            new_size = size_cell.dataset.bytes - (subtrahend !== undefined ? subtrahend : 0),
-            human_readable_size = size(new_size);
+        var size_cell = document.querySelector("#files .head .fsize"),
+            new_size, human_readable_size;
+        if (size_cell === null) {
+            return;
+        }
+        new_size = size_cell.dataset.bytes - (subtrahend !== undefined ? subtrahend : 0);
+        human_readable_size = size(new_size);
         document.querySelector("#total_size").innerHTML = "(" + human_readable_size + ")";
         size_cell.dataset.bytes = new_size;
     }
@@ -28,13 +32,16 @@ var FBAdmin = (function() {
         tmp_anchor = document.createElement("a");
         tmp_anchor.href = file_name;
         $.ajax({
-            url: "/admin/delete",
+            url: "/delete",
             type: "POST",
             data: {
                 "file_path": tmp_anchor.pathname
             }
         }).done(function() {
-            displayTotalSize(anchor.parentElement.parentElement.querySelector(".fsize").dataset.bytes);
+            var sizeElem = anchor.parentElement.parentElement.querySelector(".fsize");
+            if (sizeElem !== null) {
+                displayTotalSize(sizeElem.dataset.bytes);
+            }
             if (typeof successCallback === "function") {
                 successCallback();
             }
@@ -58,8 +65,8 @@ var FBAdmin = (function() {
     }
 
     function initEventListeners() {
-        document.querySelector("#admin_files").addEventListener('click', function(ev) {
-            var prevSelected = document.querySelector("#admin_files .fentry.active");
+        document.querySelector("#files").addEventListener('click', function(ev) {
+            var prevSelected = document.querySelector("#files .fentry.active");
             if (prevSelected) {
                 prevSelected.classList.toggle("active");
             }
@@ -69,19 +76,22 @@ var FBAdmin = (function() {
             }
         });
 
-        document.querySelector("#invite").addEventListener("click", function(ev) {
-            $.getJSON("/admin/invite")
-                .done(function(res) {
-                    var reselem = document.querySelector("#guest_url");
-                    reselem.value = res.url;
-                    reselem.select();
-                    refreshPassCount(res.passes);
-                }).fail(function(jqhxr, err) {
-                    alert(err);
-                });
-        });
+        var inviteElem = document.querySelector("#invite");
+        if (inviteElem !== null) {
+            inviteElem.addEventListener("click", function(ev) {
+                $.getJSON("/admin/invite")
+                    .done(function(res) {
+                        var reselem = document.querySelector("#guest_url");
+                        reselem.value = res.url;
+                        reselem.select();
+                        refreshPassCount(res.passes);
+                    }).fail(function(jqhxr, err) {
+                        alert(err);
+                    });
+            });
+        }
 
-        document.querySelector("#admin_files").addEventListener("click", function(ev) {
+        document.querySelector("#files").addEventListener("click", function(ev) {
             var elem = ev.target.parentElement;
             var rowElement = elem.parentElement.parentElement;
             rowElement.classList.toggle("waiting");
@@ -98,20 +108,23 @@ var FBAdmin = (function() {
             });
         });
 
-        document.querySelector("#revoke_passes").addEventListener('click', function(ev) {
-            $.ajax({
-                url: "/admin/revoke_passes",
-                type: "GET"
-            }).done(function(pass_count) {
-                refreshPassCount(pass_count);
-                document.querySelector("#guest_url").value = "";
+        var revokeElem = document.querySelector("#revoke_passes");
+        if (revokeElem !== null) {
+            revokeElem.addEventListener('click', function(ev) {
+                $.ajax({
+                    url: "/admin/revoke_passes",
+                    type: "GET"
+                }).done(function(pass_count) {
+                    refreshPassCount(pass_count);
+                    document.querySelector("#guest_url").value = "";
+                });
             });
-        });
+        }
     }
 
     function initShortcuts() {
         shortcut.add('j', function(ev) {
-            var prevElem = document.querySelector("#admin_files .fentry.active"),
+            var prevElem = document.querySelector("#files .fentry.active"),
                 nextElem;
             if (!prevElem) {
                 return; // list is empty
@@ -127,7 +140,7 @@ var FBAdmin = (function() {
         });
 
         shortcut.add('k', function(ev) {
-            var prevElem = document.querySelector("#admin_files .fentry.active"),
+            var prevElem = document.querySelector("#files .fentry.active"),
                 nextElem;
             if (!prevElem) {
                 return; // list is empty
@@ -143,7 +156,7 @@ var FBAdmin = (function() {
         });
 
         shortcut.add('Return', function(ev) {
-            var currElem = document.querySelector("#admin_files .fentry.active a");
+            var currElem = document.querySelector("#files .fentry.active a");
             if (!currElem) {
                 return; // no element selected;
             }
@@ -151,12 +164,12 @@ var FBAdmin = (function() {
         });
 
         shortcut.add('d', function(ev) {
-            var currElem = document.querySelector("#admin_files .fentry.active");
+            var currElem = document.querySelector("#files .fentry.active");
             if (!currElem) {
                 return; // no element selected
             }
             currElem.classList.toggle("waiting");
-            var deleteLink = document.querySelector("#admin_files .fentry.active a.delete");
+            var deleteLink = document.querySelector("#files .fentry.active a.delete");
             var nextSelected = currElem.nextElementSibling;
             if (!nextSelected) {
                 nextSelected = currElem.previousElementSibling;
@@ -168,8 +181,8 @@ var FBAdmin = (function() {
         });
 
         shortcut.add('g', function(ev) {
-            var curr_elem = document.querySelector("#admin_files .fentry.active"),
-                first_child = document.querySelector("#admin_files .fentry:nth-child(2)");
+            var curr_elem = document.querySelector("#files .fentry.active"),
+                first_child = document.querySelector("#files .fentry:nth-child(2)");
             if (curr_elem) {
                 curr_elem.classList.toggle("active");
             }
@@ -180,8 +193,8 @@ var FBAdmin = (function() {
         });
 
         shortcut.add('Shift+g', function(ev) {
-            var curr_elem = document.querySelector("#admin_files .fentry.active"),
-                last_child = document.querySelector("#admin_files .fentry:last-child");
+            var curr_elem = document.querySelector("#files .fentry.active"),
+                last_child = document.querySelector("#files .fentry:last-child");
             if (curr_elem) {
                 curr_elem.classList.toggle("active");
             }
@@ -193,7 +206,7 @@ var FBAdmin = (function() {
     }
 
     function init() {
-        var firstEntry = document.querySelector("#admin_files .fentry");
+        var firstEntry = document.querySelector("#files .fentry");
         if (firstEntry) {
             firstEntry.classList.toggle("active");
         }

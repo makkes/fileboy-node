@@ -30,7 +30,7 @@ app.use(session({
     unset: 'destroy'
 }));
 if (config.get('codeLoginEnabled')) {
-    app.use(["/$", "/upload"], login.authenticate('user'));
+    app.use(["/$", "/upload", "/delete"], login.authenticate('user'));
     app.use(["/admin"], login.authenticate('admin'));
 }
 app.use(function(req, res, next) {
@@ -243,14 +243,21 @@ app.get("/admin", function(req, res) {
     });
 });
 
-app.post("/admin/delete", function(req, res) {
+app.post("/delete", function(req, res) {
     var file_parts = req.param('file_path').split("/");
     relative_path = file_parts[file_parts.length - 2] + "/" + file_parts[file_parts.length - 1];
-    file_path = decodeURIComponent(path.resolve(path.join(config.get("upload-folder"), relative_path)));
-    track.delete_stats("/" + relative_path, function(err) {
-        fs.unlink(file_path, function(err) {
-            fs.rmdir(path.resolve(path.join(config.get("upload-folder"), file_parts[file_parts.length - 2])), function(err) {
-                res.send("ok");
+    track.get_file("/" + decodeURIComponent(relative_path), function(err, row) {
+        var loggedInUser = login.loggedInUser(req);
+        if (loggedInUser.roles.indexOf("admin") === -1 && loggedInUser.uid !== row.uploader) {
+            res.status(403).send("Missing privileges").end();
+            return;
+        }
+        file_path = decodeURIComponent(path.resolve(path.join(config.get("upload-folder"), relative_path)));
+        track.delete_stats("/" + relative_path, function(err) {
+            fs.unlink(file_path, function(err) {
+                fs.rmdir(path.resolve(path.join(config.get("upload-folder"), file_parts[file_parts.length - 2])), function(err) {
+                    res.send("ok");
+                });
             });
         });
     });
