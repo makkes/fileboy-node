@@ -4,6 +4,15 @@
 
 <div class="container">
 
+    {% if show_guest_passes %}
+    <a id="invite" href="#">Create invitation</a>
+    <input type="text" id="guest_url">
+
+    <div>
+        Active guest passes: <span id="pass_count">{{ guest_passes.length }}</span> (<a id="revoke_passes" href="#">revoke all</a>)
+    </div>
+    {% endif %}
+
     <h1>My Files</h1>
 
     <div class="table-responsive">
@@ -12,15 +21,23 @@
                 <tr>
                     <th>File</th>
                     <th>Date</th>
+                    <th class="fsize" data-bytes="{{total_size}}">Size <span id="total_size"><span></th>
                     <th>Downloads</th>
+                    {% if show_uploader %}
+                    <th>Uploader</th>
+                    {% endif %}
                     <th></th>
                 </tr>
             </thead>
             {% for file in files %}
             <tr>
-                <td><a href="{{file.url}}">{{file.file}}</a></td>
-                <td>{{file.printableDate}}</td>
+                <td><a href="{{file.url}}">{{file.name}}</a></td>
+                <td>{{file.time}}</td>
+                <td class="fsize" data-bytes="{{file.size}}">{{file.print_size}}</td>
                 <td>{{file.downloads}}</td>
+                {% if show_uploader %}
+                <td>{{file.uploader}}</td>
+                {% endif %}
                 <td><a class="delete" data-url="{{file.url}}" href="#"><i class="fa fa-trash-o"></i></a></td>
             </tr>
             {% endfor %}
@@ -33,6 +50,6 @@
 
 {% block footer %}
 
-<script>FBAdmin.init();</script>
+<script>Fileboy.init();</script>
 
 {% endblock %}

@@ -16,6 +16,9 @@ var guest = require('./guest');
 var login = require('./login');
 var migrations = require('./migrations');
 
+swig.setDefaults({
+    cache: false
+});
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
@@ -197,51 +200,54 @@ function upload(req, res, next) {
     req.pipe(req.busboy);
 }
 
-app.get("/my/files", login.authenticate("user"), function(req, res) {
-    track.get_files(login.loggedInUser(req).uid, function(err, files) {
-        files.forEach(function(file) {
-            file.url = config.get("base-url") + "/uploads/" + file.file;
-            file.file = path.basename(file.file);
-            file.printableDate = moment(file.date).format('LLL');
-        });
-        res.render('myfiles', {
-            files: sortByFieldDescending(files, "date")
-        });
-    });
-});
+app.get("/my/files", login.authenticate("user"), render_files.bind(null, false));
+app.get("/admin", fetch_guest_passes, render_files.bind(null, true));
 
-app.get("/admin", function(req, res) {
-    track.get_download_stats(function(stats) {
-        helpers.walk(config.get("upload-folder"), function(err, results) {
-            var infos = [];
-            var total_size = 0;
-            var pending = results.length;
-            guest.get_all(function(err, guest_passes) {
+function fetch_guest_passes(req, res, next) {
+    guest.get_all(function(err, guest_passes) {
+        if (!err) {
+            req.guest_passes = guest_passes;
+        }
+        next();
+    });
+}
+
+function render_files(admin, req, res) {
+    var getterFunc = admin ? track.get_all_files : track.get_files.bind(null, login.loggedInUser(req).uid);
+    getterFunc(function(err, files) {
+        var result = [],
+            total_size = 0;
+        var pending = files.length;
+        if (pending === 0) {
+            res.render('myfiles', {
+                files: [],
+                total_size: 0,
+                show_uploader: admin,
+                show_guest_passes: admin,
+                guest_passes: req.guest_passes
+            });
+        }
+        files.forEach(function(file) {
+            helpers.info(file, function(err, info) {
+                pending--;
+                if (!err) {
+                    result.push(info);
+                    total_size += info.size;
+                }
                 if (pending === 0) {
-                    res.render('admin', {
-                        files: infos,
+                    res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+                    res.render('myfiles', {
+                        files: sortByFieldDescending(result, "timestamp"),
+                        show_uploader: admin,
+                        show_guest_passes: admin,
                         total_size: total_size,
-                        guest_passes: guest_passes
+                        guest_passes: req.guest_passes
                     });
                 }
-                results.forEach(function(file) {
-                    helpers.info(file, stats, function(info) {
-                        infos.push(info);
-                        total_size += info.size;
-                        if (--pending <= 0) {
-                            res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-                            res.render('admin', {
-                                files: sortByFieldDescending(infos, "timestamp"),
-                                total_size: total_size,
-                                guest_passes: guest_passes
-                            });
-                        }
-                    });
-                });
             });
         });
     });
-});
+}
 
 app.post("/delete", function(req, res) {
     var file_parts = req.param('file_path').split("/");

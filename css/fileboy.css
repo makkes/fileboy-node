@@ -62,10 +62,6 @@ a i[class^="fa"] {
 }
 
 
-#files .head {
-    background-color: #b5baff;
-}
-
 #files tr.fentry.active {
     background-color: #dee0ff;
 }

@@ -11,6 +11,18 @@ function get_files(user, callback) {
     });
 }
 
+/** 
+ * TODO: mostly redundant with get_files
+ */
+
+function get_all_files(callback) {
+    var db = new sqlite3.Database(config.get("database"));
+    db.all("SELECT * FROM stats", function(err, rows) {
+        db.close();
+        callback(null, rows);
+    });
+}
+
 function get_file(path, callback) {
     var db = new sqlite3.Database(config.get("database"));
     var stmt = db.prepare('SELECT * FROM stats WHERE file = ?');
@@ -54,21 +66,6 @@ function track_download(req, res, next) {
     next();
 }
 
-function get_download_stats(callback) {
-    var res = {};
-    var db = new sqlite3.Database(config.get("database"));
-    db.all("SELECT * FROM stats", function(err, rows) {
-        db.close();
-        rows.forEach(function(row) {
-            res[row.file] = {
-                downloads: row.downloads,
-                uploader: row.uploader
-            };
-        });
-        callback(res);
-    });
-}
-
 function delete_stats(file, callback) {
     var db = new sqlite3.Database(config.get("database"));
     db.run("DELETE FROM stats WHERE file = ?", file, function(err) {
@@ -79,7 +76,7 @@ function delete_stats(file, callback) {
 
 module.exports = {
     delete_stats: delete_stats,
-    get_download_stats: get_download_stats,
+    get_all_files: get_all_files,
     track_download: track_download,
     track_upload: track_upload,
     get_files: get_files,

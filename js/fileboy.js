@@ -1,4 +1,4 @@
-var FBAdmin = (function() {
+var Fileboy = (function() {
     function size(fileSizeInBytes) {
         var i = -1;
         var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -11,7 +11,7 @@ var FBAdmin = (function() {
     }
 
     function displayTotalSize(subtrahend) {
-        var size_cell = document.querySelector("#files .head .fsize"),
+        var size_cell = document.querySelector("#files th.fsize"),
             new_size, human_readable_size;
         if (size_cell === null) {
             return;

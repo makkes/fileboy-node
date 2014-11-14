@@ -77,20 +77,23 @@ function walk(dir, done) {
     });
 }
 
-function info(file, stats, callback) {
-    fs.stat(file, function(err, stat) {
-        var relpath = file.replace(config.get("upload-folder"), ""),
-            dbStat = stats[relpath] || {};
+function info(dbFile, callback) {
+    fs.stat(config.get('upload-folder') + "/" + dbFile.file, function(err, stat) {
+        if (err) {
+            console.log(err);
+            callback(err);
+            return;
+        }
         mtime = moment(stat.mtime);
-        callback({
-            url: config.get("base-url") + "/uploads/" + relpath,
-            name: path.basename(file),
+        callback(null, {
+            url: config.get("base-url") + "/uploads/" + dbFile.file,
+            name: path.basename(dbFile.file),
             size: stat.size,
             print_size: filesize(stat.size),
             time: mtime.format("LLL"),
             timestamp: mtime.format("X"),
-            downloads: dbStat.downloads || 0,
-            uploader: dbStat.uploader || ""
+            downloads: dbFile.downloads || 0,
+            uploader: dbFile.uploader || ""
         });
     });
 }
