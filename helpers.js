@@ -78,7 +78,7 @@ function walk(dir, done) {
 }
 
 function info(dbFile, callback) {
-    fs.stat(config.get('upload-folder') + "/" + dbFile.file, function(err, stat) {
+    fs.stat(config.get('upload-folder') + "/" + decodeURIComponent(dbFile.file), function(err, stat) {
         if (err) {
             console.log(err);
             callback(err);
