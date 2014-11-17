@@ -44,7 +44,7 @@ function track_upload(user, file, callback) {
 }
 
 function track_download(req, res, next) {
-    var filename = req.url;
+    var filename = decodeURIComponent(req.url);
     var db = new sqlite3.Database(config.get("database"));
     var stmt = db.prepare('SELECT downloads FROM stats WHERE file = ?');
     stmt.get(filename, function(err, row) {
