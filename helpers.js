@@ -87,7 +87,7 @@ function info(dbFile, callback) {
         mtime = moment(stat.mtime);
         callback(null, {
             url: config.get("base-url") + "/uploads/" + dbFile.file,
-            name: path.basename(dbFile.file),
+            name: decodeURIComponent(path.basename(dbFile.file)),
             size: stat.size,
             print_size: filesize(stat.size),
             time: mtime.format("LLL"),
