@@ -54,6 +54,11 @@ function run(dbfile, callback) {
 
 function migrateUIDs(db, callback) {
     var usersByURI = {};
+    console.log(config.codeLogin);
+    if (!config.codeLogin) {
+        callback();
+        return;
+    }
     Object.keys(config.codeLogin.users).forEach(function(uid) {
         Object.keys(config.codeLogin.users[uid].transports).forEach(function(transport) {
             usersByURI[transport + ":" + config.codeLogin.users[uid].transports[transport]] = uid;

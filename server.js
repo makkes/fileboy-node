@@ -127,7 +127,7 @@ app.get("/login", function(req, res, next) {
         }
     } else {
         res.render('login', {
-            transports: Object.keys(config.codeLogin.transports)
+            transports: config.codeLogin && Object.keys(config.codeLogin.transports)
         });
     }
 });
