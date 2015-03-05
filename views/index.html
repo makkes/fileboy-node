@@ -79,13 +79,20 @@ function drop(e) {
 }
 
 function handleFiles(files) {
+    window.addEventListener("beforeunload", uploadInProgressAlerter);
+    var finishedUploads = 0;
     for(var i = 0; i < files.length; i++) {
         var file = files[i];
-        upload(file);
+        upload(file, function() {
+            finishedUploads++;
+            if(finishedUploads === files.length) {
+                window.removeEventListener("beforeunload", uploadInProgressAlerter);
+            }
+        });
     }
 }
 
-function upload(file) {
+function upload(file, cb) {
     var form = new FormData();
     form.append("file", file);
     var resChild = document.createElement("div");
@@ -111,18 +118,22 @@ function upload(file) {
         }
     }).done(function (response) {
         resChild.innerHTML = "<a href='" + response.url + "'>" + response.url + "</a>";
+        cb();
     }).fail(function (jqhxr, err) {
         if(jqhxr.status === 413) {
             err = "File too large";
         }
         resChild.innerHTML = "Upload failed: " + err;
+        cb();
     });
 }
 
-if(window.addEventListener) {
-    window.addEventListener("load", init, true);
-    } else {
-    window.onload = init;
+window.addEventListener("load", init, true);
+
+function uploadInProgressAlerter(e) {
+    var warning = "An upload is currently in progress!";
+    (e || window.event).returnValue = warning;
+    return warning;
 }
 
 </script>
